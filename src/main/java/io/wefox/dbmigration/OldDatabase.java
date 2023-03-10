@@ -40,26 +40,29 @@ public class OldDatabase {
 //    }
 
     public Multi<OldTable> getOldTableValuesNotInProfilesIds(Multi<String> profileIds) {
+
+        String notIn = profileIds.subscribe().asStream().map(s -> "'" + s + "'").collect(Collectors.joining(","));
+
         return oldDatabaseClient.preparedQuery("SELECT" +
                         " pkexternalid__c," +
                         " mobileosone__c," +
                         " appmobilebuildversionone__c," +
                         " mobileosversionone__c," +
                         " appmobileversionone__c," +
-                        " appversionone__c," +
+                        " devicetypeone__c," +
                         " createddate," +
                         " lastmodifieddate" +
                         "  FROM salesforce.account" +
                         " where " +
-                        "1=1" +
-                        "AND mobileosone__c != null " +
-                        "AND appmobilebuildversionone__c != null " +
-                        "AND mobileosversionone__c != null " +
-                        "AND appmobileversionone__c != null " +
-                        "AND appversionone__c != null " +
-                        "AND createddate != null " +
-                        "AND pkexternalid__c not in ($1)")
-                .execute(Tuple.of(profileIds.subscribe().asStream().collect(Collectors.joining(","))))
+                        "1=1 " +
+                        "AND mobileosone__c is not null " +
+                        "AND appmobilebuildversionone__c is not null " +
+                        "AND mobileosversionone__c is not null " +
+                        "AND appmobileversionone__c is not null " +
+                        "AND devicetypeone__c is not null " +
+                        "AND createddate is not null " +
+                        "AND pkexternalid__c not in (" + notIn + ")")
+                .execute()
                 .onItem()
                 .transformToMulti(set -> Multi.createFrom().iterable(set))
                 .onItem()
@@ -76,7 +79,7 @@ public class OldDatabase {
                 row.getString("appmobilebuildversionone__c"),
                 row.getString("mobileosversionone__c"),
                 row.getString("appmobileversionone__c"),
-                row.getString("appversionone__c"),
+                row.getString("devicetypeone__c"),
                 row.getLocalDateTime("createddate"),
                 row.getLocalDateTime("lastmodifieddate")
         );

@@ -37,13 +37,13 @@ public class LocalDatabase {
                 Stream.of(
                         UUID.randomUUID().toString(),
                         oldTable.externalId(),
-                        emptyIfValue(oldTable.appMobileBuild()),
-                        emptyIfValue(oldTable.appVersionOne()),
-                        emptyIfValue(oldTable.mobileOsOne()),
-                        emptyIfValue(oldTable.mobileOsVersion()),
-                        emptyIfValue(oldTable.appMobileBuild()),
-                        todayIfValue(oldTable.createdDate()),
-                        todayIfValue(oldTable.modificationDate())
+                        oldTable.appMobileBuild(),
+                        oldTable.appMobileVersion(),
+                        oldTable.mobileOsOne(),
+                        oldTable.mobileOsVersion(),
+                        oldTable.deviceTypeOne(),
+                        oldTable.createdDate(),
+                        oldTable.modificationDate()
                 ).toList()
         )).collect(Collectors.toList());
 
@@ -83,19 +83,5 @@ public class LocalDatabase {
         return value;
     }
 
-
-    private String emptyIfValue(String value) {
-
-        if (value == null) {
-            return "";
-        }
-
-        if(value.length() > 20) {
-            LOGGER.errorf("To big %s", value);
-            return value.substring(0, 19);
-        }
-
-        return value;
-    }
 
 }

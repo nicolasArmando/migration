@@ -9,7 +9,7 @@ public record OldTable(
         String appMobileBuild,
         String mobileOsVersion,
         String appMobileVersion,
-        String appVersionOne,
+        String deviceTypeOne,
         LocalDateTime createdDate,
         LocalDateTime modificationDate
         ) {}
